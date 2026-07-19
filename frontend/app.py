@@ -67,7 +67,7 @@ if predict_clicked:
                 st.json(result)
             else:
                 label = str(prediction).lower()
-                if "spam" in label and "ham" not in label:
+                if not " not a spam" in label :
                     st.error(f"🚨 **This looks like SPAM**")
                 else:
                     st.success(f"✅ **This looks like HAM (Not Spam)**")
