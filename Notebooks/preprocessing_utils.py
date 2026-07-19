@@ -14,7 +14,17 @@ nltk.download('punkt_tab', quiet=True)
 nltk.download('stopwords', quiet=True)
 
 stemmer = PorterStemmer()
-_STOPWORDS = set(stopwords.words('english'))
+
+# NLTK's default English stopword list includes words that are actually
+# strong SIGNAL for spam detection (e.g. "won", "below"), not noise.
+# Blindly removing them throws away the exact evidence the model needs,
+# e.g. "you have WON $10,000" -> "you have $10,000" after stopword removal.
+# We start from the default list and carve out spam-relevant terms.
+_SPAM_SIGNAL_WORDS = {
+    'won', 'below', 'free', 'win', 'winner', 'winning', 'money', 'cash',
+    'urgent', 'click', 'off', 'no', 'now',
+}
+_STOPWORDS = set(stopwords.words('english')) - _SPAM_SIGNAL_WORDS
 
 
 def preprocessing(text: str) -> str:
